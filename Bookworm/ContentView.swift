@@ -9,20 +9,39 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            Text("Count: \(books.count)")
-                .navigationTitle("Bookworm")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showingAddScreen.toggle()
-                        } label: {
-                            Label("Add book", systemImage: "plus")
+            List {
+                ForEach(books) { book in
+                    NavigationLink {
+                        DetailView(book: book)
+                    } label: {
+                        HStack {
+                            EmojiRatingView(rating: book.rating)
+                                .font(.largeTitle)
+                            
+                            VStack(alignment: .leading) {
+                                Text(book.title ?? "Unknown title")
+                                    .font(.headline)
+                                
+                                Text(book.author ?? "Unknown author")
+                                    .foregroundColor(.secondary)
+                            }
                         }
                     }
                 }
-                .sheet(isPresented: $showingAddScreen) {
-                    AddBookView()
+            }
+            .navigationTitle("Bookworm")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddScreen.toggle()
+                    } label: {
+                        Label("Add book", systemImage: "plus")
+                    }
                 }
+            }
+            .sheet(isPresented: $showingAddScreen) {
+                AddBookView()
+            }
         }
     }
 }
